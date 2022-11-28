@@ -1,29 +1,32 @@
-$folder_path= $PSScriptRoot
+$FOLDERPATH=$PSScriptRoot
 
-cd ${folder_path}
-echo "Entering ${folder_path}......"
+cd ${FOLDERPATH}
+echo "Entering ${FOLDERPATH}......"
+./env/Scripts/activate
 
-$view1video= '2022-11-22-6-1.MP4'
-$view2video= '2022-11-22-6-2.MP4'
+$VIEW1VIDEO='2022-11-22-6-1.MP4'
+$VIEW2VIDEO='2022-11-22-6-2.MP4'
+$VIEW1NAME=$VIEW1VIDEO.Split('.')[0]
+$VIEW2NAME=$VIEW2VIDEO.Split('.')[0]
 
 
-echo "Detecting ball from ${view1video}......"
+echo "Detecting ball from ${VIEW1VIDEO}......"
 python yolov7/detect.py `
 --weights yolov7/weights/yolov7_baseball.pt `
 --conf 0.4 `
 --img-size 1920 `
---source video/${view1video} `
---name $view1video.Split('.')[0] `
+--source video/${VIEW1VIDEO} `
+--name $VIEW1NAME `
 --view-img `
 --save-txt
 
-echo "Detecting ball from ${view2video}......"
+echo "Detecting ball from ${VIEW2VIDEO}......"
 python yolov7/detect.py `
 --weights yolov7/weights/yolov7_baseball.pt `
 --conf 0.4 `
 --img-size 1920 `
---source video/${view2video} `
---name $view2video.Split('.')[0] `
+--source video/${VIEW2VIDEO} `
+--name $VIEW2NAME `
 --view-img `
 --save-txt
 
