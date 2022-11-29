@@ -99,7 +99,8 @@ if __name__ == "__main__":
                         break
                     elif key == ord("z"):
                         print("saving to " + str(Path(args.output)))
-                        np.save(str(Path(args.output)), np.array(coordinate_list))
+                        with open(str(Path(args.output)), "wb") as f:
+                            np.save(f, np.array(coordinate_list))
                         draw_img = draw_img(coordinate_list, img)
                         cv2.imwrite(Path(args.output).stem + ".png", draw_img)
                         break

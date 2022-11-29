@@ -2,3 +2,5 @@ env/
 video/
 frame/
 runs/
+input_file/
+output/

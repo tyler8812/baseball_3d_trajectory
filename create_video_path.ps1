@@ -10,6 +10,7 @@ $VIEW1NAME=$VIEW1VIDEO.Split('.')[0]
 $VIEW2NAME=$VIEW2VIDEO.Split('.')[0]
 
 mkdir input_file
+mkdir output
 mkdir "input_file/$VIEW1NAME"
 mkdir "input_file/$VIEW2NAME"
 

@@ -61,18 +61,18 @@ if __name__ == "__main__":
                         if int(split_string[2]) > 775:
                             continue
 
-                        current_ball.append(
+                    current_ball.append(
+                        (
+                            split_string[0],
+                            "0",
                             (
-                                split_string[0],
-                                "0",
-                                (
-                                    split_string[1],
-                                    split_string[2],
-                                    split_string[3],
-                                    split_string[4],
-                                ),
-                            )
+                                split_string[1],
+                                split_string[2],
+                                split_string[3],
+                                split_string[4],
+                            ),
                         )
+                    )
 
         result.append(current_ball)
 
