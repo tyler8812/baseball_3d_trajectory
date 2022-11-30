@@ -11,7 +11,7 @@ create folder for running code
 get two view predicted baseball
 it will save as label.txt
 
-3. convert_yolov7_result.ps1: convert yolov7 label result to npy format and delete some outlier balls
+3. convert_yolov7_result.ps1: convert yolov7 label result to npy format
 
 4. get_img_coordinate.ps1:
 get reference box coordinate in two views to get word coordinate of cameras 

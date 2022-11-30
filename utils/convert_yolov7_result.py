@@ -33,33 +33,33 @@ if __name__ == "__main__":
                 for ball in balls:
                     split_string = ball.split("\n")[0].split(" ")
                     # Todo
-                    if args.view == 2:
-                        # too right
-                        if int(split_string[1]) > 1100:
-                            continue
-                        # too left
-                        if int(split_string[3]) < 516:
-                            continue
-                        # too top
-                        if int(split_string[4]) < 387:
-                            continue
-                        # too low
-                        if int(split_string[2]) > 820:
-                            continue
+                    # if args.view == 2:
+                    #     # too right
+                    #     if int(split_string[1]) > 1100:
+                    #         continue
+                    #     # too left
+                    #     if int(split_string[3]) < 516:
+                    #         continue
+                    #     # too top
+                    #     if int(split_string[4]) < 387:
+                    #         continue
+                    #     # too low
+                    #     if int(split_string[2]) > 820:
+                    #         continue
 
-                    else:
-                        # too right
-                        if int(split_string[1]) > 1247:
-                            continue
-                        # too left
-                        if int(split_string[3]) < 843:
-                            continue
-                        # too top
-                        if int(split_string[4]) < 300:
-                            continue
-                        # too low
-                        if int(split_string[2]) > 775:
-                            continue
+                    # else:
+                    #     # too right
+                    #     if int(split_string[1]) > 1247:
+                    #         continue
+                    #     # too left
+                    #     if int(split_string[3]) < 843:
+                    #         continue
+                    #     # too top
+                    #     if int(split_string[4]) < 300:
+                    #         continue
+                    #     # too low
+                    #     if int(split_string[2]) > 775:
+                    #         continue
 
                     current_ball.append(
                         (

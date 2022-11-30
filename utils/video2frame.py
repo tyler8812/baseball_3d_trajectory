@@ -3,7 +3,7 @@ from os import listdir, makedirs
 from os.path import isfile, join, splitext, exists
 from pathlib import Path
 
-video_path = "./video/2022-11-22-6-2.MP4"
+video_path = "./video/2022-11-22-4s2-1.MP4"
 output_folder = "./frame"
 # only for one video
 file_name = Path(video_path).stem
