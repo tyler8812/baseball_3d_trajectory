@@ -93,14 +93,13 @@ def draw2court(
 
     pts4D = pts4D[:, :] / pts4D[-1, :]
     x, y, z, w = pts4D
-    target1 = [x[-1], y[-1], z[-1]]
-    target2 = [x[-2], y[-2], z[-2]]
+    target = [x[-1], y[-1], z[-1]]
 
     courtX = x[:-1]
     courtY = y[:-1]
     courtZ = z[:-1]
     court = [courtX, courtY, courtZ]
-    return court, target1, target2
+    return court, target
 
 
 # draw the court of different balls
@@ -240,7 +239,7 @@ def show_3D(
     target_view2,
     start_frame1,
     start_frame2,
-    alpha=0.2,
+    alpha=0.8,
     add_court=False,
     save_name=None,
     is_set_lim=True,
@@ -257,7 +256,7 @@ def show_3D(
     frame_count = 0
     count = 0
     cap = [cv2.VideoCapture(i) for i in input_videos]
-    history = 3
+
     frames = [None] * len(input_videos)
     ret = [None] * len(input_videos)
 
@@ -276,7 +275,7 @@ def show_3D(
         fig = plt.figure(figsize=(19.2, 21.6))
         gs = gridspec.GridSpec(6, 6)
         ax = plt.subplot(gs[:, :], projection="3d")
-        ax.view_init(20, -120)
+        ax.view_init(0, -180)
         if is_set_lim:
             ax.set_xlim(-100, 1100)
             ax.set_ylim(-100, 1100)
@@ -290,61 +289,17 @@ def show_3D(
             if c is not None:
                 ret[i], frames[i] = c.read()
 
+        if count < target.shape[-1] and frame_count == target_frame[count]:
+            count += 1
         ax.scatter(court_x, court_y, court_z, color="r", marker="o", alpha=alpha)
         ax.scatter(
-            target_x[: (count) * 2],
-            target_y[: (count) * 2],
-            target_z[: (count) * 2],
+            target_x[:count],
+            target_y[:count],
+            target_z[:count],
             color="b",
             marker="o",
             alpha=alpha,
         )
-        # draw trajectory with history
-        # if count >= history - 1:
-        #     ax.scatter(
-        #         target_x[count * 2 : (count + 1) * 2],
-        #         target_y[count * 2 : (count + 1) * 2],
-        #         target_z[count * 2 : (count + 1) * 2],
-        #         color="r",
-        #         marker="o",
-        #         alpha=alpha,
-        #     )
-        #     ax.scatter(
-        #         target_x[(count - history + 1) * 2 : count * 2],
-        #         target_y[(count - history + 1) * 2 : count * 2],
-        #         target_z[(count - history + 1) * 2 : count * 2],
-        #         color="b",
-        #         marker="o",
-        #         alpha=alpha,
-        #     )
-        # ax.plot(
-        #     [target_x[count * 2], target_x[count * 2 + 1]],
-        #     [target_y[count * 2], target_y[count * 2 + 1]],
-        #     [target_z[count * 2], target_z[count * 2 + 1]],
-        #     color="r",
-        # )
-        # for i in range(1, history):
-        #     ax.plot(
-        #         [target_x[(count - i) * 2], target_x[(count - i) * 2 + 1]],
-        #         [target_y[(count - i) * 2], target_y[(count - i) * 2 + 1]],
-        #         [target_z[(count - i) * 2], target_z[(count - i) * 2 + 1]],
-        #         color="b",
-        #     )
-        # else:
-        #     ax.scatter(
-        #         target_x[count * 2 : (count + 1) * 2],
-        #         target_y[count * 2 : (count + 1) * 2],
-        #         target_z[count * 2 : (count + 1) * 2],
-        #         color="b",
-        #         marker="o",
-        #         alpha=alpha,
-        #     )
-        # ax.plot(
-        #     [target_x[count * 2], target_x[count * 2 + 1]],
-        #     [target_y[count * 2], target_y[count * 2 + 1]],
-        #     [target_z[count * 2], target_z[count * 2 + 1]],
-        #     color="b",
-        # )
 
         if add_court:
             drawCourt(court_category, ax)
@@ -359,8 +314,6 @@ def show_3D(
         frame1 = draw_target(target_view1[frame_count], frames[0])
         frame2 = draw_target(target_view2[frame_count], frames[1])
 
-        if count * 2 < target.shape[-1] and frame_count == target_frame[count * 2]:
-            count += 1
         frame_count += 1
 
         merge_image = cv2.vconcat([frame1, frame2])
@@ -381,18 +334,12 @@ def show_3D(
 
 
 def draw_target(target_view, frame):
-    if len(target_view) != 0:
-
-        # cv2.line(frame, target_view[0], target_view[1], (255, 0, 0), 2)
+    if target_view != None:
         cv2.circle(
             frame,
-            (
-                int(float(target_view[0][2][0])),
-                int(float(target_view[0][2][1])),
-            ),
-            5,
-            (255, 0, 0),
+            target_view[1],
+            8,
+            (141, 66, 245),
             -1,
         )
-        # cv2.circle(frame, target_view[1], 5, (255, 0, 0), -1)
     return frame

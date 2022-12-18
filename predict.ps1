@@ -4,6 +4,7 @@ cd ${FOLDERPATH}
 echo "Entering ${FOLDERPATH}......"
 ./env/Scripts/activate
 
+# single video
 $VIEW1VIDEO="2022-11-22-4s5-1.MP4"
 $VIEW2VIDEO="2022-11-22-4s5-2.MP4"
 $VIEW1NAME=$VIEW1VIDEO.Split('.')[0]
@@ -17,7 +18,8 @@ python yolov7/detect.py `
 --source video/${VIEW1VIDEO} `
 --name $VIEW1NAME `
 --view-img `
---save-txt
+--save-txt `
+--save-conf
 
 echo "Detecting ball from ${VIEW2VIDEO}......"
 python yolov7/detect.py `
@@ -27,7 +29,10 @@ python yolov7/detect.py `
 --source video/${VIEW2VIDEO} `
 --name $VIEW2NAME `
 --view-img `
---save-txt
+--save-txt `
+--save-conf
+
+# mulit video
 # for ($num1 = 1 ; $num1 -le 4 ; $num1++){  
 #     if ($num1 -eq 3){
 #         continue;
@@ -47,7 +52,8 @@ python yolov7/detect.py `
 #         --source video/${VIEW1VIDEO} `
 #         --name $VIEW1NAME `
 #         --view-img `
-#         --save-txt
+#         --save-txt `
+#         --save-conf
 
 #         echo "Detecting ball from ${VIEW2VIDEO}......"
 #         python yolov7/detect.py `
@@ -57,7 +63,8 @@ python yolov7/detect.py `
 #         --source video/${VIEW2VIDEO} `
 #         --name $VIEW2NAME `
 #         --view-img `
-#         --save-txt
+#         --save-txt `
+#         --save-conf
 
 #     }
 # }

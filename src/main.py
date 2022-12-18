@@ -2,6 +2,27 @@ import turtle
 from matplotlib.pyplot import flag
 
 
+def get_ball_and_remove_outliers(balls, outliers):
+    if len(outliers) == 0:
+        outliers = balls
+        return 0, outliers
+    # print(balls)
+    for i in reversed(range(len(balls))):
+        is_new_ball = True
+        for j in range(len(outliers)):
+            # new ball
+            if (
+                abs(balls[i][1][0] - outliers[j][1][0]) <= 10
+                and abs(balls[i][1][1] - outliers[j][1][1]) <= 10
+            ):
+                is_new_ball = False
+                break
+        if is_new_ball:
+            outliers.append(balls[i])
+            return i, outliers
+    return -1, outliers
+
+
 def merge(
     frame_skip,
     target_view1,
@@ -21,9 +42,9 @@ def merge(
         court: e.g., [[x1, y1, z1], [x2, y2, z2],...]
     """
     court = None
-    target_view1_for_display = target_view1.copy()
+    target_view1_for_display = []
 
-    target_view2_for_display = target_view2.copy()
+    target_view2_for_display = []
 
     frames = zip(target_view1, target_view2)
 
@@ -43,22 +64,29 @@ def merge(
         mtx=np.load(calibration)["camera_matrix"],
     )
 
+    view1_outliers = []
+    view2_outliers = []
     for frame_num, frame in enumerate(frames):
         if frame_num % frame_skip != 0:
             continue
         view1, view2 = frame
+        view1_idx, view1_outliers = get_ball_and_remove_outliers(view1, view1_outliers)
+        view2_idx, view2_outliers = get_ball_and_remove_outliers(view2, view2_outliers)
+
+        target_view1_for_display.append(view1[view1_idx] if view1_idx != -1 else None)
+        target_view2_for_display.append(view2[view2_idx] if view2_idx != -1 else None)
         # get targets position
-        if len(view1) > 0 and len(view2) > 0:
+        if view1_idx != -1 and view2_idx != -1:
             target_view1 = np.array(
-                [[int(float(view1[0][2][0])), int(float(view1[0][2][1]))]],
+                [[view1[view1_idx][1][0], view1[view1_idx][1][1]]],
                 dtype="int",
             )
             target_view2 = np.array(
-                [[int(float(view2[0][2][0])), int(float(view2[0][2][1]))]],
+                [[view2[view2_idx][1][0], view2[view2_idx][1][1]]],
                 dtype="int",
             )
 
-            court, target1, target2 = draw2court(
+            court, target = draw2court(
                 target_view1=target_view1,
                 target_view2=target_view2,
                 src_points_1=get_ref_points(ref_points_view1),
@@ -66,10 +94,8 @@ def merge(
                 proj_map_1=proj_map_1,
                 proj_map_2=proj_map_2,
             )
-            target1.append(frame_num)
-            target2.append(frame_num)
-            target_frame_num.append(target1)
-            target_frame_num.append(target2)
+            target.append(frame_num)
+            target_frame_num.append(target)
     target_frame_num = np.array(target_frame_num)
     target = target_frame_num.T
     # If there is no bat, just add court points.
