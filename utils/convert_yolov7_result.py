@@ -5,6 +5,18 @@ from pathlib import Path
 import numpy as np
 import os
 
+
+def convert_xyxy_to_middle(string):
+    top_x = int(string[1])
+
+    top_y = int(string[2])
+    down_x = int(string[3])
+    down_y = int(string[4])
+    middle_x = (top_x + down_x) // 2
+    middle_y = (top_y + down_y) // 2
+    return (middle_x, middle_y)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
@@ -32,6 +44,8 @@ if __name__ == "__main__":
                 balls = f.readlines()
                 for ball in balls:
                     split_string = ball.split("\n")[0].split(" ")
+                    middle_point = convert_xyxy_to_middle(split_string)
+                    confidence_score = float(split_string[5])
                     # Todo
                     # if args.view == 2:
                     #     # too right
@@ -61,18 +75,7 @@ if __name__ == "__main__":
                     #     if int(split_string[2]) > 775:
                     #         continue
 
-                    current_ball.append(
-                        (
-                            split_string[0],
-                            "0",
-                            (
-                                split_string[1],
-                                split_string[2],
-                                split_string[3],
-                                split_string[4],
-                            ),
-                        )
-                    )
+                    current_ball.append([confidence_score, middle_point])
 
         result.append(current_ball)
 
