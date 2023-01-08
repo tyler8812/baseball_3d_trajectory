@@ -277,9 +277,9 @@ def show_3D(
         ax = plt.subplot(gs[:, :], projection="3d")
         ax.view_init(0, -180)
         if is_set_lim:
-            ax.set_xlim(-100, 1100)
-            ax.set_ylim(-100, 1100)
-            ax.set_zlim(-200, 1000)
+            ax.set_xlim(-700, 1100)
+            ax.set_ylim(-700, 1100)
+            ax.set_zlim(-100, 300)
 
         ax.set_xlabel("X Label")
         ax.set_ylabel("Y Label")

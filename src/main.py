@@ -5,6 +5,8 @@ from matplotlib.pyplot import flag
 def get_ball_and_remove_outliers(balls, outliers):
     if len(outliers) == 0:
         outliers = balls
+        if len(outliers) == 0:
+            return -1, outliers
         return 0, outliers
     # print(balls)
     for i in reversed(range(len(balls))):
@@ -12,8 +14,8 @@ def get_ball_and_remove_outliers(balls, outliers):
         for j in range(len(outliers)):
             # new ball
             if (
-                abs(balls[i][1][0] - outliers[j][1][0]) <= 10
-                and abs(balls[i][1][1] - outliers[j][1][1]) <= 10
+                abs(balls[i][1][0] - outliers[j][1][0]) <= 1
+                and abs(balls[i][1][1] - outliers[j][1][1]) <= 1
             ):
                 is_new_ball = False
                 break

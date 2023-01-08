@@ -78,5 +78,4 @@ if __name__ == "__main__":
                     current_ball.append([confidence_score, middle_point])
 
         result.append(current_ball)
-
         np.save(args.output, result)
