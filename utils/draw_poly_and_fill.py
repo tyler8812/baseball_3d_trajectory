@@ -1,6 +1,20 @@
-# importing the module
+# Import necessary libraries
 import cv2
+import numpy as np
 import argparse
+import sys
+
+# np.set_printoptions(threshold=sys.maxsize)
+
+
+def draw_poly_and_save(img, coordinate_list):
+    print("saving to " + str(Path(args.output)))
+    blank_image = np.zeros((img.shape[0], img.shape[1], 3), np.uint8)
+    points = np.array(coordinate_list)
+    cv2.fillPoly(blank_image, pts=[points], color=(255, 255, 255))
+    blank_image = blank_image / 255
+    cv2.imwrite(str(Path(args.output)), blank_image)
+    print(np.sum(blank_image))
 
 
 def draw_img(coordinate_list, img):
@@ -42,7 +56,6 @@ def click_event(event, x, y, flags, params):
         draw_img(coordinate_list, img)
 
 
-# driver function
 if __name__ == "__main__":
     from pathlib import Path
     import copy
@@ -98,11 +111,8 @@ if __name__ == "__main__":
                     elif key == 27:
                         break
                     elif key == ord("z"):
-                        print("saving to " + str(Path(args.output)))
-                        with open(str(Path(args.output)), "wb") as f:
-                            np.save(f, np.array(coordinate_list))
-                        draw_img = draw_img(coordinate_list, img)
-                        cv2.imwrite(str(Path(args.video)) + "_corrdinate.png", draw_img)
+                        draw_poly_and_save(img, coordinate_list)
+
                         break
 
     # close the window

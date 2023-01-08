@@ -5,8 +5,8 @@ echo "Entering ${FOLDERPATH}......"
 ./env/Scripts/activate
 
 # single video
-$VIEW1VIDEO="2022-12-19-sp2-1.MP4"
-$VIEW2VIDEO="2022-12-19-sp2-2.MP4"
+$VIEW1VIDEO="2022-12-19-9-1.MP4"
+$VIEW2VIDEO="2022-12-19-9-2.MP4"
 $VIEW1NAME=$VIEW1VIDEO.Split('.')[0]
 $VIEW2NAME=$VIEW2VIDEO.Split('.')[0]
 

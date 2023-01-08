@@ -1,8 +1,31 @@
 import turtle
 from matplotlib.pyplot import flag
+import cv2
 
 
-def get_ball_and_remove_outliers(balls, outliers):
+def remove_outliers(view1, view2, mask_view1, mask_view2):
+    mask1 = cv2.imread(mask_view1)
+    mask2 = cv2.imread(mask_view2)
+
+    new_view1, new_view2 = [], []
+
+    for i in range(len(view1)):
+        value = view1[i]
+        x = value[1][0]
+        y = value[1][1]
+        if mask1[y][x][0] != 0:
+            new_view1.append(value)
+    for i in range(len(view2)):
+        value = view2[i]
+        x = value[1][0]
+        y = value[1][1]
+        if mask2[y][x][0] != 0:
+            new_view2.append(value)
+
+    return new_view1, new_view2
+
+
+def get_moving_ball(balls, outliers):
     if len(outliers) == 0:
         outliers = balls
         if len(outliers) == 0:
@@ -31,6 +54,8 @@ def merge(
     target_view2,
     ref_points_view1,
     ref_points_view2,
+    mask_view1,
+    mask_view2,
     calibration,
     input_videos,
     start_frame1,
@@ -72,8 +97,10 @@ def merge(
         if frame_num % frame_skip != 0:
             continue
         view1, view2 = frame
-        view1_idx, view1_outliers = get_ball_and_remove_outliers(view1, view1_outliers)
-        view2_idx, view2_outliers = get_ball_and_remove_outliers(view2, view2_outliers)
+        view1, view2 = remove_outliers(view1, view2, mask_view1, mask_view2)
+
+        view1_idx, view1_outliers = get_moving_ball(view1, view1_outliers)
+        view2_idx, view2_outliers = get_moving_ball(view2, view2_outliers)
 
         target_view1_for_display.append(view1[view1_idx] if view1_idx != -1 else None)
         target_view2_for_display.append(view2[view2_idx] if view2_idx != -1 else None)
@@ -209,6 +236,8 @@ if __name__ == "__main__":
     parser.add_argument("--calib_file", type=str)
     parser.add_argument("--ref_points_view1", type=str)
     parser.add_argument("--ref_points_view2", type=str)
+    parser.add_argument("--mask_view1", type=str)
+    parser.add_argument("--mask_view2", type=str)
     parser.add_argument("--target_view1", type=str)
     parser.add_argument("--target_view2", type=str)
     parser.add_argument("--output_fig", type=str)
@@ -224,6 +253,8 @@ if __name__ == "__main__":
     # is_re_run = args.re_run
     ref_points_view1 = args.ref_points_view1
     ref_points_view2 = args.ref_points_view2
+    mask_view1 = args.mask_view1
+    mask_view2 = args.mask_view2
     calibration = args.calib_file
     output_fig = args.output_fig
     input_videos = args.input_videos
@@ -250,6 +281,8 @@ if __name__ == "__main__":
         target_view2,
         ref_points_view1,
         ref_points_view2,
+        mask_view1,
+        mask_view2,
         calibration,
         input_videos,
         start_frame1,
