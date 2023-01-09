@@ -272,60 +272,63 @@ def show_3D(
         i += 1
 
     while True:
-        fig = plt.figure(figsize=(19.2, 21.6))
-        gs = gridspec.GridSpec(6, 6)
-        ax = plt.subplot(gs[:, :], projection="3d")
-        ax.view_init(0, -180)
-        if is_set_lim:
-            ax.set_xlim(-700, 1100)
-            ax.set_ylim(-700, 1100)
-            ax.set_zlim(-100, 300)
+        try:
+            fig = plt.figure(figsize=(19.2, 21.6))
+            gs = gridspec.GridSpec(6, 6)
+            ax = plt.subplot(gs[:, :], projection="3d")
+            ax.view_init(0, -180)
+            if is_set_lim:
+                ax.set_xlim(-700, 1100)
+                ax.set_ylim(-700, 1100)
+                ax.set_zlim(-100, 300)
 
-        ax.set_xlabel("X Label")
-        ax.set_ylabel("Y Label")
-        ax.set_zlabel("Z Label")
+            ax.set_xlabel("X Label")
+            ax.set_ylabel("Y Label")
+            ax.set_zlabel("Z Label")
 
-        for i, c in enumerate(cap):
-            if c is not None:
-                ret[i], frames[i] = c.read()
+            for i, c in enumerate(cap):
+                if c is not None:
+                    ret[i], frames[i] = c.read()
 
-        if count < target.shape[-1] and frame_count == target_frame[count]:
-            count += 1
-        ax.scatter(court_x, court_y, court_z, color="r", marker="o", alpha=alpha)
-        ax.scatter(
-            target_x[:count],
-            target_y[:count],
-            target_z[:count],
-            color="b",
-            marker="o",
-            alpha=alpha,
-        )
+            if count < target.shape[-1] and frame_count == target_frame[count]:
+                count += 1
+            ax.scatter(court_x, court_y, court_z, color="r", marker="o", alpha=alpha)
+            ax.scatter(
+                target_x[:count],
+                target_y[:count],
+                target_z[:count],
+                color="b",
+                marker="o",
+                alpha=alpha,
+            )
 
-        if add_court:
-            drawCourt(court_category, ax)
+            if add_court:
+                drawCourt(court_category, ax)
+            fig.canvas.draw()
+            # convert canvas to image
+            img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep="")
+            img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+            # img is rgb, convert to opencv's default bgr
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            # draw target onto view1 and view2
+            frame1 = draw_target(target_view1[frame_count], frames[0])
+            frame2 = draw_target(target_view2[frame_count], frames[1])
 
-        fig.canvas.draw()
-        # convert canvas to image
-        img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep="")
-        img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-        # img is rgb, convert to opencv's default bgr
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-        # draw target onto view1 and view2
-        frame1 = draw_target(target_view1[frame_count], frames[0])
-        frame2 = draw_target(target_view2[frame_count], frames[1])
+            frame_count += 1
 
-        frame_count += 1
-
-        merge_image = cv2.vconcat([frame1, frame2])
-        merge_image = cv2.hconcat([merge_image, img])
-        resize_size = (int(merge_image.shape[1] * 0.7), int(merge_image.shape[0] * 0.7))
-        merge_image = cv2.resize(merge_image, resize_size)
-        cv2.imshow("frame", merge_image)
-        if save_name is not None:
-            video.write(merge_image)
-        if cv2.waitKey(1) == ord("q"):
-            break
-        plt.close(fig)
+            merge_image = cv2.vconcat([frame1, frame2])
+            merge_image = cv2.hconcat([merge_image, img])
+            resize_size = (int(merge_image.shape[1] * 0.7), int(merge_image.shape[0] * 0.7))
+            merge_image = cv2.resize(merge_image, resize_size)
+            cv2.imshow("frame", merge_image)
+            if save_name is not None:
+                video.write(merge_image)
+            if cv2.waitKey(1) == ord("q"):
+                break
+            plt.close(fig)
+        except:
+            plt.show()
+            plt.close(fig)
     if save_name is not None:
         video.release()
     # cap.release()
